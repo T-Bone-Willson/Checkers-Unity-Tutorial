@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4925175447126746}
   - component: {fileID: 33654863836051686}
   - component: {fileID: 23190396649668182}
+  - component: {fileID: 114435331175231540}
   m_Layer: 0
   m_Name: WhitePiece
   m_TagString: Untagged
@@ -79,3 +80,14 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1038191140075710}
   m_Mesh: {fileID: 4300000, guid: 7d9e648e00436ae45ad0de6c4e98ca16, type: 3}
+--- !u!114 &114435331175231540
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1038191140075710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1aec40c69497c042aebe84960dd496e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
