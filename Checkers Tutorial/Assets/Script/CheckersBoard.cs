@@ -5,6 +5,7 @@ using UnityEngine;
 public class CheckersBoard : MonoBehaviour {
 
     // Sets data for the array. Which tells us the amount of black and white pieces for the board
+    // Also creates the class "Piece"
     public Piece[,] pieces = new Piece[8, 8];
     // Creates game objects for board. This allows me to drag and drop the relevant art to the relevant GameObject
     public GameObject whitePiecePrefab;
@@ -13,16 +14,21 @@ public class CheckersBoard : MonoBehaviour {
     private Vector3 boardOffset = new Vector3(-4.0f, 0.0f, -4.0f);
     // Same as previous but for "pieceOffset" method
     private Vector3 pieceOffset = new Vector3(0.5f, 0.0f, 0.5f);
+
+    private bool isWhite;
+    private bool isWhiteTurn;
+
     //Look at tutorial 2, 13.05 mins in. Could give indication on how to do movement log
     private Piece selectedPiece;
 
     private Vector2 mouseOver;
     private Vector2 startDrag;
-    private Vector3 endDrag;
+    private Vector2 endDrag;
 
     // Use this for initialization
     private void Start()
     {
+        isWhiteTurn = true;
         GenerateBoard();
     }
     // updates the game every frame.
@@ -36,6 +42,10 @@ public class CheckersBoard : MonoBehaviour {
         {
             int x = (int)mouseOver.x;
             int y = (int)mouseOver.y;
+
+            if (selectedPiece != null)
+                UpdatePieceDrag(selectedPiece);
+
             // If pressed mouse button, then we select piece
             if (Input.GetMouseButtonDown(0))
                 SelectPiece(x, y);
@@ -60,16 +70,32 @@ public class CheckersBoard : MonoBehaviour {
         // Store value of the "mousePosition" into variable "pov"
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out pov, 25.0f, LayerMask.GetMask("Board")))
         {
-            //x, y and z are axis's in Vector2
+            // x, y and z are axis's in Vector2
             mouseOver.x = (int)(pov.point.x - boardOffset.x);
             mouseOver.y = (int)(pov.point.z - boardOffset.z);
         }
         else
         {
-            //if raycast doesnt his, then equals -1. A non hit essentially.
+            // if raycast doesnt his, then equals -1. A non hit essentially.
             mouseOver.x = -1;
             mouseOver.y = -1;
         }
+    }
+    private void UpdatePieceDrag(Piece p)
+    {
+        
+        if (!Camera.main)
+        {
+            Debug.Log("Unable to main Camera");
+            return;
+        }
+        RaycastHit pov;
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out pov, 25.0f, LayerMask.GetMask("Board")))
+        {
+            // If valid object i.e checker piece, to move. Then raise/elevate checker piece above board
+            p.transform.position = pov.point + Vector3.up;
+        }
+       
     }
 
     private void SelectPiece(int x, int y)
@@ -90,12 +116,74 @@ public class CheckersBoard : MonoBehaviour {
     // x1 & y1 mean start position, x2 & y2 mean end position
     private void TryMove(int x1, int y1, int x2, int y2)
     {
-        //THIS IS ONLY FOR MULTIPLAYER SUPPORT!!!! LOOK AT 17.20 MINS IN OF TUTORIAL 2!!!!
+        //THIS IS ONLY FOR MULTIPLAYER SUPPORT!!!! LOOK AT 17.20 MINS IN TUTORIAL 2!!!!
         startDrag = new Vector2(x1, y1);
         endDrag = new Vector2(x2, y2);
         selectedPiece = pieces[x1, y1];
 
-        MovePiece(selectedPiece, x2, y2);
+        // Stops players moving checker off of board by checking if it placement cordinate is below minimum or equal to array length of 8,8
+        if (x2 < 0 || x2 >= pieces.Length || y2 < 0 || y2 >= pieces.Length)
+        {
+            // This resets the piece to where it initially was, if placed out of bounds or an illegal move,
+            if (selectedPiece != null)
+                MovePiece(selectedPiece, x1, y1);
+
+            startDrag = Vector2.zero;
+            selectedPiece = null;
+            return;
+        }
+        // Checks if there is any piece selected, if not, then nothing happens
+        if (selectedPiece != null)
+        {
+            // If it has not moved
+            if (endDrag == startDrag)
+            {
+                MovePiece(selectedPiece, x1, y1);
+                startDrag = Vector2.zero;
+                selectedPiece = null;
+                return;
+            }
+            // Check if it's a valid move by refering to the class "Piece" via "pieces"
+            if (selectedPiece.ValidMove(pieces, x1, y1, x2, y2))
+            {
+                // Did we kill?
+                // If this is a jump
+                // MAY NEED TO CHECK TUTORIAL £ AT 15:46 TO SEE IF IT's "x1 - x2" OR "x2 - x2"!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                if (Mathf.Abs(x2 - x2) == 2)
+                {
+                    Piece p = pieces[(x1 + x2) / 2, (y1 + y2) / 2];
+                    if (p != null)
+                    {
+                        //Destorys piece that has been jumped over.
+                        pieces[(x1 + x2) / 2, (y1 + y2) / 2] = null;
+                        Destroy(p.gameObject);
+                    }
+                }
+                // Sets piece thats moved into new value whithin the array, which are contained at "x2" and "y2" 
+                pieces[x2, y2] = selectedPiece;
+                // Makes previous data stored on the array of piece that has just moved, which are contained on "x1" and "y1", null
+                pieces[x1, y1] = null;
+                MovePiece(selectedPiece, x2, y2);
+                // Ends turn once move has been made
+                EndTurn();
+
+            }
+
+        }
+    }
+
+    private void EndTurn()
+    {
+        selectedPiece = null;
+        startDrag = Vector2.zero;
+
+        isWhiteTurn = !isWhiteTurn;
+        CheckVictory();
+    }
+
+    private void CheckVictory()
+    {
+
     }
 
     // Method to generate pieces on board
