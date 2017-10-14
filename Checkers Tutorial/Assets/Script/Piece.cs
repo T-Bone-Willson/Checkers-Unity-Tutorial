@@ -17,7 +17,8 @@ public class Piece : MonoBehaviour {
         // Keep track of the number of tiles that have been jumped via x axis
         int jumpedTilesX = Mathf.Abs(x1 - x2);
         // Keep track of the number of tiles that have been jumped via y axis
-        int jumpedTilesY = y1 - y2;
+        // subtract value y2 to value of y1, gives new cordinate
+        int jumpedTilesY = y2 - y1;
         // If jump 1 tile, it's a move. If jumped two tiles, it's a kill!
         // WHITE TEAM MOVE SET
         if (isWhite || isKing)
@@ -32,14 +33,14 @@ public class Piece : MonoBehaviour {
                 if (jumpedTilesY == 2)
                 {
                     Piece p = board[(x1 + x2) / 2, (y1 + y2) / 2];
-                    // If piece piece is jumping and it's not null AND over the same colour as our piece, then allowed to jump over by two tiles.
+                    // If piece piece is jumping and it's not null AND NOT over the same colour as our piece, then allowed to jump over by two tiles.
                     if (p != null && p.isWhite != isWhite)
                         return true;
                 }
             }
         }
         //BLACK TEAM MOVE SET
-        if (isWhite || isKing)
+        if (!isWhite || isKing)
         {
             if (jumpedTilesX == 1)
             {
@@ -51,7 +52,7 @@ public class Piece : MonoBehaviour {
                 if (jumpedTilesY == -2)
                 {
                     Piece p = board[(x1 + x2) / 2, (y1 + y2) / 2];
-                    // If piece piece is jumping and it's not null AND over the same colour as our piece, then allowed to jump over by two tiles.
+                    // If piece piece is jumping and it's not null AND NOT over the same colour as our piece, then allowed to jump over by two tiles.
                     if (p != null && p.isWhite != isWhite)
                         return true;
                 }
