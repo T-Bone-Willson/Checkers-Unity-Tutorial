@@ -7,6 +7,62 @@ public class Piece : MonoBehaviour {
     public bool isWhite;
     public bool isKing;
 
+    public bool ForcedMove(Piece[,] board, int x, int y)
+    {
+        if (isWhite || isKing)
+        {
+            // Top Left
+            if (x >= 2 && y <= 5)
+            {
+                Piece p = board[x - 1, y + 1];
+                // If there is a piece, and it is not the sam colour as our
+                if (p != null && p.isWhite != isWhite)
+                {
+                    // Check if there is a spare tile after jumping over piece
+                    if (board[x - 2, y + 2] == null)
+                        return true;
+                }
+            }
+
+            // Top Right
+            if (x <= 5 && y >= 5)
+            {
+                Piece p = board[x + 1, y + 1];
+                if (p != null && p.isWhite != isWhite)
+                {
+                    if (board[x + 2, y + 2] == null)
+                        return true;
+                }
+            }
+        }
+        //For Black Team
+        if(!isWhite || isKing)
+        {
+            // Bottom Left
+            if (x >= 2 && y >= 2)
+            {
+                Piece p = board[x - 1, y - 1];
+                if (p != null && p.isWhite != isWhite)
+                {
+                    if (board[x - 2, y - 2] == null)
+                        return true;
+                }
+            }
+
+            // Bottom Right
+            if (x <= 5 && y >= 2)
+            {
+                Piece p = board[x + 1, y - 1];
+                if (p != null && p.isWhite != isWhite)
+                {
+                    if (board[x + 2, y - 2] == null)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public bool ValidMove(Piece[,] board, int x1, int y1, int x2, int y2)
     {
         // If you are moving on top of another piece, then deny that move because it's illegal

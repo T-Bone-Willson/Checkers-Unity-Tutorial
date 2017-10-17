@@ -166,7 +166,14 @@ public class CheckersBoard : MonoBehaviour {
                 MovePiece(selectedPiece, x2, y2);
                 // Ends turn once move has been made
                 EndTurn();
-
+            }
+            // If trying to make invalid move, it will then drop the piece back into original position.
+            else
+            {
+                MovePiece(selectedPiece, x1, y1);
+                startDrag = Vector2.zero;
+                selectedPiece = null;
+                return;
             }
 
         }
