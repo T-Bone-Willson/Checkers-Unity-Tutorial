@@ -7,26 +7,37 @@ public class Piece : MonoBehaviour {
     public bool isWhite;
     public bool isKing;
 
+    // References the board which is a 2 dimensional array
     public bool ForcedMove(Piece[,] board, int x, int y)
     {
         if (isWhite || isKing)
         {
-            // Top Left
+            // Diagonaly Top Left
+            // NOT TO SURE HOW THIS BIT WORKS, CHECK TUTORIAL 4, 3:00 MINS IN. MAYBE A HINT AT 4:30
             if (x >= 2 && y <= 5)
             {
+                // x - 1 means: 1 to the left (-) of your piece
+                // y + 1 means: 1 up/above (+) of your piece
+                // So it checks 1 to left then 1 above from there. That sets it's Diagonaly Top Left.
                 Piece p = board[x - 1, y + 1];
-                // If there is a piece, and it is not the sam colour as our
+                // If there is a piece, and it is not the same colour as our
                 if (p != null && p.isWhite != isWhite)
                 {
                     // Check if there is a spare tile after jumping over piece
+                    // x - 2 means: 2 to the left (-) of your piece
+                    // y + 2 means: 2 up/above (+) of your piece
+                    // "null" refers to empty tile
                     if (board[x - 2, y + 2] == null)
                         return true;
                 }
             }
 
-            // Top Right
+            // Diagonaly Top Right
             if (x <= 5 && y >= 5)
             {
+                // x + 1 means: 1 to the right (+) of your piece
+                // y + 1 means: 1 up/above (+) of your piece
+                // So it checks 1 to the Right then 1 above from there. That sets it's Diagonaly Top Right.
                 Piece p = board[x + 1, y + 1];
                 if (p != null && p.isWhite != isWhite)
                 {
@@ -38,9 +49,12 @@ public class Piece : MonoBehaviour {
         //For Black Team
         if(!isWhite || isKing)
         {
-            // Bottom Left
+            // Diagonaly Bottom Left
             if (x >= 2 && y >= 2)
             {
+                // x - 1 means: 1 to the left (-) of your piece
+                // y - 1 means: 1 down/below (-) of your piece
+                // So it checks 1 to left then 1 down/below from there. That sets it's Diagonaly Bottom Left.
                 Piece p = board[x - 1, y - 1];
                 if (p != null && p.isWhite != isWhite)
                 {
@@ -49,9 +63,12 @@ public class Piece : MonoBehaviour {
                 }
             }
 
-            // Bottom Right
+            // Diagonaly Bottom Right
             if (x <= 5 && y >= 2)
             {
+                // x + 1 means: 1 to the right (+) of your piece
+                // y - 1 means: 1 down/below (-) of your piece
+                // So it checks 1 to right then 1 down/below from there. That sets it's Diagonaly Bottom Right.
                 Piece p = board[x + 1, y - 1];
                 if (p != null && p.isWhite != isWhite)
                 {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CheckersBoard : MonoBehaviour {
 
-    // Sets data for the array. Which tells us the amount of black and white pieces for the board
+    // Sets data 8 by 8 for the 2D array. Which tells us the amount of black and white pieces for the board
     // Also creates the class "Piece"
     public Piece[,] pieces = new Piece[8, 8];
     // Creates game objects for board. This allows me to drag and drop the relevant art to the relevant GameObject
@@ -113,6 +113,25 @@ public class CheckersBoard : MonoBehaviour {
             Debug.Log(selectedPiece.name);
         }
     }
+
+    private List<Piece> forcedPieces;
+
+    // COULD BE USED FOR AI MOVEMENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private List<Piece> ScanForMove()
+    {
+        forcedPieces = new List<Piece>();
+
+        //Check all the pieces, all the time
+        // Left to Right of the 2D array
+        for (int dimensionX = 0; dimensionX < pieces.Length; dimensionX++)
+            // Up to Down of the 2D array
+            for (int dimensionY = 0; dimensionY < pieces.Length; dimensionY++)
+                // Checks X & Y cordinates on board (pieces), if there is a piece (!= null) and the piece is "White". Then it's your turn
+                if (pieces[dimensionX, dimensionY] != null && pieces[dimensionX, dimensionY].isWhite == isWhiteTurn)
+                    if (pieces[dimensionX, dimensionY].ForcedMove(pieces, dimensionX, dimensionY))
+                        forcedPieces.Add(pieces[dimensionX, dimensionY]);
+    }
+
     // x1 & y1 mean start position, x2 & y2 mean end position
     private void TryMove(int x1, int y1, int x2, int y2)
     {
@@ -148,7 +167,7 @@ public class CheckersBoard : MonoBehaviour {
             {
                 // Did we kill?
                 // If this is a jump
-                // MAY NEED TO CHECK TUTORIAL £ AT 15:46 TO SEE IF IT's "x1 - x2" OR "x2 - x2"!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // MAY NEED TO CHECK TUTORIAL 3 AT 15:46 TO SEE IF IT's "x1 - x2" OR "x2 - x2"!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 if (Mathf.Abs(x2 - x2) == 2)
                 {
                     Piece p = pieces[(x1 + x2) / 2, (y1 + y2) / 2];
@@ -171,11 +190,12 @@ public class CheckersBoard : MonoBehaviour {
             else
             {
                 MovePiece(selectedPiece, x1, y1);
+                // resets startDrag
                 startDrag = Vector2.zero;
+                // resets selectedPiece back to null
                 selectedPiece = null;
                 return;
             }
-
         }
     }
 
