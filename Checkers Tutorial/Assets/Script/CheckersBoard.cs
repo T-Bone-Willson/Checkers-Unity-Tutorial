@@ -7,7 +7,7 @@ public class CheckersBoard : MonoBehaviour {
     // Sets data 8 by 8 for the 2D array. Which tells us the amount of black and white pieces for the board
     // Also creates the class "Piece"
     public Piece[,] pieces = new Piece[8, 8];
-    // Creates game objects for board. This allows me to drag and drop the relevant art to the relevant GameObject
+    // Creates game objects for board. This allows me to drag and drop the relevant art asset to the relevant GameObject
     public GameObject whitePiecePrefab;
     public GameObject blackPiecePrefab;
     // Vector3 data realigns objects within "boardOffset" method
@@ -15,7 +15,7 @@ public class CheckersBoard : MonoBehaviour {
     // Same as previous but for "pieceOffset" method
     private Vector3 pieceOffset = new Vector3(0.5f, 0.0f, 0.5f);
 
-    private bool isWhite;
+    public bool isWhite;
     private bool isWhiteTurn;
     private bool hasKilled;
 
@@ -30,6 +30,7 @@ public class CheckersBoard : MonoBehaviour {
     private void Start()
     {
         isWhiteTurn = true;
+        forcedPieces = new List<Piece>();
         GenerateBoard();
     }
     // updates the game every frame.
@@ -107,11 +108,24 @@ public class CheckersBoard : MonoBehaviour {
 
         Piece p = pieces[x, y];
         // if null, you don't recieve debug log. Means things are working.
-        if (p != null)
+        if (p != null && p.isWhite == isWhite)
         {
-            selectedPiece = p;
-            startDrag = mouseOver;
-            Debug.Log(selectedPiece.name);
+            // Checks if there is no forced move rule that needs to be acted
+            if (forcedPieces.Count == 0)
+            {
+                selectedPiece = p;
+                startDrag = mouseOver;
+            }
+            else
+            {
+                // Look for the piece under our forced pieces list
+                // Use "Lambda" expression which is an "anonymous" method
+                if (forcedPieces.Find(forcedP => forcedP == p) == null)
+                    return;
+
+                selectedPiece = p;
+                startDrag = mouseOver;
+            }
         }
     }
 
@@ -173,8 +187,7 @@ public class CheckersBoard : MonoBehaviour {
             {
                 // Did we kill?
                 // If this is a jump
-                // MAY NEED TO CHECK TUTORIAL 3 AT 15:46 TO SEE IF IT's "x1 - x2" OR "x2 - x2"!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                if (Mathf.Abs(x2 - x2) == 2)
+                if (Mathf.Abs(x2 - x1) == 2)
                 {
                     Piece p = pieces[(x1 + x2) / 2, (y1 + y2) / 2];
                     if (p != null)
