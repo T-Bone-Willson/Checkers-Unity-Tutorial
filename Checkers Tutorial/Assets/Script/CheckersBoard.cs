@@ -231,8 +231,31 @@ public class CheckersBoard : MonoBehaviour {
 
     private void EndTurn()
     {
+        // Keep track of where we landed during our turn
+        int xAxis = (int)endDrag.x;
+        int yAxis = (int)endDrag.y;
+
+        // Promotion to King!
+        // If white piece gets to the top of the bvoard (7) then it becomes a "King" piece
+        if (selectedPiece != null)
+        {
+            if (selectedPiece.isWhite && !selectedPiece.isKing && yAxis == 7)
+            {
+                selectedPiece.isKing = true;
+                selectedPiece.transform.Rotate(Vector3.right * 180);
+            }
+            // If black piece gets to the bottom of the board (0) then it becomes a "King" piece
+            else if (!selectedPiece.isWhite && !selectedPiece.isKing && yAxis == 0)
+            {
+                selectedPiece.isKing = true;
+                selectedPiece.transform.Rotate(Vector3.right * 180);
+            }
+        }
+
         selectedPiece = null;
         startDrag = Vector2.zero;
+
+        //if(ScanForMove())
 
         isWhiteTurn = !isWhiteTurn;
         hasKilled = false;
