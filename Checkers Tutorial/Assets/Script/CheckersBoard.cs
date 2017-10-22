@@ -38,9 +38,8 @@ public class CheckersBoard : MonoBehaviour {
     {
         UpdateMouseOver();
 
-        //Debug.Log(mouseOver);
-
-        // if it is my turn
+        // Ternary operator; If it's white, return is white turn, else is not white turn.
+        if((isWhite)?isWhiteTurn:!isWhiteTurn)
         {
             int x = (int)mouseOver.x;
             int y = (int)mouseOver.y;
@@ -128,9 +127,18 @@ public class CheckersBoard : MonoBehaviour {
             }
         }
     }
-
+    
     private List<Piece> forcedPieces;
 
+    private List<Piece> ScanForMove(Piece p, int x, int y)
+    {
+        forcedPieces = new List<Piece>();
+
+        if (pieces[x, y].ForcedMove(pieces, x, y))
+            forcedPieces.Add(pieces[x, y]);
+
+        return forcedPieces;
+    }
     // COULD BE USED FOR AI MOVEMENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private List<Piece> ScanForMove()
     {
@@ -255,18 +263,45 @@ public class CheckersBoard : MonoBehaviour {
         selectedPiece = null;
         startDrag = Vector2.zero;
 
-        //if(ScanForMove())
+        // If piece that has just moved & has killed something, but has another opertunity to kill; Allow them to do so
+        if (ScanForMove(selectedPiece, xAxis, yAxis).Count != 0 && hasKilled)
+            return;
 
         isWhiteTurn = !isWhiteTurn;
+        // Switches from white team to black team, each time a valid move or sequence of moves are done
+        isWhite = !isWhite;
         hasKilled = false;
         CheckVictory();
     }
 
     private void CheckVictory()
     {
+        var blackWhitePiece = FindObjectsOfType<Piece>();
+        bool hasWhite = false, hasblack = false;
+        for (int i = 0; i < blackWhitePiece.Length; i++)
+        {
+            // Checks if all white pieces are gone
+            if (blackWhitePiece[i].isWhite)
+                hasWhite = true;
+            else
+                hasblack = true;
+        }
+        // No white pieces left = to you lose
+        if (!hasWhite)
+            Victory(false);
+        // No black pieces left = to you win
+        if (!hasblack)
+            Victory(true);
 
     }
 
+    private void Victory(bool isWhite)
+    {
+        if (isWhite)
+            Debug.Log("White Team Has Won");
+        else
+            Debug.Log("Black Team Has Won");
+    }
     // Method to generate pieces on board
     private void GenerateBoard()
     {
