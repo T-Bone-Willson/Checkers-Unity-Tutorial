@@ -46,6 +46,7 @@ public class Piece : MonoBehaviour {
                 }
             }
         }
+
         //For Black Team
         if(!isWhite || isKing)
         {

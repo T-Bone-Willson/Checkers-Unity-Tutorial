@@ -21,6 +21,7 @@ public class CheckersBoard : MonoBehaviour {
 
     //Look at tutorial 2, 13.05 mins in. Could give indication on how to do movement log
     private Piece selectedPiece;
+    private List<Piece> forcedPieces;
 
     private Vector2 mouseOver;
     private Vector2 startDrag;
@@ -33,6 +34,7 @@ public class CheckersBoard : MonoBehaviour {
         forcedPieces = new List<Piece>();
         GenerateBoard();
     }
+
     // updates the game every frame.
     private void Update()
     {
@@ -56,6 +58,7 @@ public class CheckersBoard : MonoBehaviour {
                 TryMove((int)startDrag.x, (int)startDrag.y, x, y);
         }
     }
+
     // Mouse controls
     private void UpdateMouseOver()
     {
@@ -82,6 +85,7 @@ public class CheckersBoard : MonoBehaviour {
             mouseOver.y = -1;
         }
     }
+
     private void UpdatePieceDrag(Piece p)
     {
         
@@ -126,36 +130,6 @@ public class CheckersBoard : MonoBehaviour {
                 startDrag = mouseOver;
             }
         }
-    }
-    
-    private List<Piece> forcedPieces;
-
-    private List<Piece> ScanForMove(Piece p, int x, int y)
-    {
-        forcedPieces = new List<Piece>();
-
-        if (pieces[x, y].ForcedMove(pieces, x, y))
-            forcedPieces.Add(pieces[x, y]);
-
-        return forcedPieces;
-    }
-    // COULD BE USED FOR AI MOVEMENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    private List<Piece> ScanForMove()
-    {
-        forcedPieces = new List<Piece>();
-
-        //Check all the pieces, all the time
-        // Left to Right of the 2D array
-        for (int dimensionX = 0; dimensionX < 8; dimensionX++)
-            // Up to Down of the 2D array
-            for (int dimensionY = 0; dimensionY < 8; dimensionY++)
-                // Checks X & Y cordinates on board (pieces), if there is a piece (!= null) and the piece is "White". Then it's your turn
-                if (pieces[dimensionX, dimensionY] != null && pieces[dimensionX, dimensionY].isWhite == isWhiteTurn)
-                    // Check if move is has to be forced.
-                    if (pieces[dimensionX, dimensionY].ForcedMove(pieces, dimensionX, dimensionY))
-                        forcedPieces.Add(pieces[dimensionX, dimensionY]);
-
-        return forcedPieces;
     }
 
     // x1 & y1 mean start position, x2 & y2 mean end position
@@ -240,20 +214,20 @@ public class CheckersBoard : MonoBehaviour {
     private void EndTurn()
     {
         // Keep track of where we landed during our turn
-        int xAxis = (int)endDrag.x;
-        int yAxis = (int)endDrag.y;
+        int x = (int)endDrag.x;
+        int y = (int)endDrag.y;
 
         // Promotion to King!
         // If white piece gets to the top of the bvoard (7) then it becomes a "King" piece
         if (selectedPiece != null)
         {
-            if (selectedPiece.isWhite && !selectedPiece.isKing && yAxis == 7)
+            if (selectedPiece.isWhite && !selectedPiece.isKing && y == 7)
             {
                 selectedPiece.isKing = true;
                 selectedPiece.transform.Rotate(Vector3.right * 180);
             }
             // If black piece gets to the bottom of the board (0) then it becomes a "King" piece
-            else if (!selectedPiece.isWhite && !selectedPiece.isKing && yAxis == 0)
+            else if (!selectedPiece.isWhite && !selectedPiece.isKing && y == 0)
             {
                 selectedPiece.isKing = true;
                 selectedPiece.transform.Rotate(Vector3.right * 180);
@@ -264,7 +238,7 @@ public class CheckersBoard : MonoBehaviour {
         startDrag = Vector2.zero;
 
         // If piece that has just moved & has killed something, but has another opertunity to kill; Allow them to do so
-        if (ScanForMove(selectedPiece, xAxis, yAxis).Count != 0 && hasKilled)
+        if (ScanForMove(selectedPiece, x, y).Count != 0 && hasKilled)
             return;
 
         isWhiteTurn = !isWhiteTurn;
@@ -302,6 +276,36 @@ public class CheckersBoard : MonoBehaviour {
         else
             Debug.Log("Black Team Has Won");
     }
+
+    private List<Piece> ScanForMove(Piece p, int x, int y)
+    {
+        forcedPieces = new List<Piece>();
+
+        if (pieces[x, y].ForcedMove(pieces, x, y)) 
+            forcedPieces.Add(pieces[x, y]);
+
+        return forcedPieces;
+    }
+
+    // COULD BE USED FOR AI MOVEMENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private List<Piece> ScanForMove()
+    {
+        forcedPieces = new List<Piece>();
+
+        //Check all the pieces, all the time
+        // Left to Right of the 2D array
+        for (int dimensionX = 0; dimensionX < 8; dimensionX++)
+            // Up to Down of the 2D array
+            for (int dimensionY = 0; dimensionY < 8; dimensionY++)
+                // Checks X & Y cordinates on board (pieces), if there is a piece (!= null) and the piece is "White". Then it's your turn
+                if (pieces[dimensionX, dimensionY] != null && pieces[dimensionX, dimensionY].isWhite == isWhiteTurn)
+                    // Check if move is has to be forced.
+                    if (pieces[dimensionX, dimensionY].ForcedMove(pieces, dimensionX, dimensionY))
+                        forcedPieces.Add(pieces[dimensionX, dimensionY]);
+
+        return forcedPieces;
+    }
+
     // Method to generate pieces on board
     private void GenerateBoard()
     {
