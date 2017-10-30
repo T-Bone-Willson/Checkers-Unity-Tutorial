@@ -31,9 +31,9 @@ public class Piece : MonoBehaviour {
                         return true;
                 }
             }
-
+            
             // Diagonaly Top Right
-            if (x <= 5 && y >= 5)
+            if (x <= 5 && y <= 5)
             {
                 // x + 1 means: 1 to the right (+) of your piece
                 // y + 1 means: 1 up/above (+) of your piece
