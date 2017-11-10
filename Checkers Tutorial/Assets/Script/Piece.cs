@@ -13,7 +13,6 @@ public class Piece : MonoBehaviour {
         if (isWhite || isKing)
         {
             // Diagonaly Top Left
-            // NOT TO SURE HOW THIS BIT WORKS, CHECK TUTORIAL 4, 3:00 MINS IN. MAYBE A HINT AT 4:30
             if (x >= 2 && y <= 5)
             {
                 // x - 1 means: 1 to the left (-) of your piece
@@ -137,17 +136,4 @@ public class Piece : MonoBehaviour {
         return false;
     }
 
-
-
-
-    /*
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}*/
 }

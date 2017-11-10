@@ -30,6 +30,7 @@ public class CheckersBoard : MonoBehaviour {
     // Use this for initialization
     private void Start()
     {
+        isWhite = true;    
         isWhiteTurn = true;
         forcedPieces = new List<Piece>();
         GenerateBoard();
@@ -176,7 +177,7 @@ public class CheckersBoard : MonoBehaviour {
                     {
                         //Destorys piece that has been jumped over.
                         pieces[(x1 + x2) / 2, (y1 + y2) / 2] = null;
-                        Destroy(p.gameObject);
+                        DestroyImmediate(p.gameObject);
                         hasKilled = true;
                     }
                 }
@@ -251,20 +252,20 @@ public class CheckersBoard : MonoBehaviour {
     private void CheckVictory()
     {
         var blackWhitePiece = FindObjectsOfType<Piece>();
-        bool hasWhite = false, hasblack = false;
+        bool hasWhite = false, hasBlack = false;
         for (int i = 0; i < blackWhitePiece.Length; i++)
         {
             // Checks if all white pieces are gone
             if (blackWhitePiece[i].isWhite)
                 hasWhite = true;
             else
-                hasblack = true;
+                hasBlack = true;
         }
         // No white pieces left = to you lose
         if (!hasWhite)
             Victory(false);
         // No black pieces left = to you win
-        if (!hasblack)
+        if (!hasBlack)
             Victory(true);
 
     }
