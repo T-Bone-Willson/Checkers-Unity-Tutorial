@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -199,6 +200,12 @@ public class CheckersBoard : MonoBehaviour {
                 pieces[x1, y1] = null;
                 MovePiece(selectedPiece, x2, y2);
                 // Ends turn once move has been made
+
+                // IMPLEMENT STACK HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                //Stack<Vector2> undoStack = new Stack<Vector2>();
+               // undoStack.Push(MovePiece(selectedPiece));
+
+
                 EndTurn();
             }
             // If trying to make invalid move, it will then drop the piece back into original position.
@@ -211,6 +218,11 @@ public class CheckersBoard : MonoBehaviour {
             }
         }
     }
+
+    /*private Vector2 MovePiece(Piece selectedPiece)
+    {
+        throw new NotImplementedException();
+    }*/
 
     private void EndTurn()
     {
