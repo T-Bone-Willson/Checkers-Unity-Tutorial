@@ -812,9 +812,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1858022834}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d52602017edb08e45b05bab156a6076c, type: 3}
+  m_Script: {fileID: 11500000, guid: 231df49b3e430034085d91d20befac4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  whitePiecePrefab: {fileID: 1038191140075710, guid: c5aaf13b86f076c4db6f6c8b268f3909,
+    type: 2}
+  blackPiecePrefab: {fileID: 1314429571128324, guid: 6b88c9931b5bdb046be417ca3f6313d3,
+    type: 2}
+  isWhite: 0
 --- !u!1 &2022544911
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,6 +27,8 @@ public class CheckersBoard : MonoBehaviour {
     private Vector2 mouseOver;
     private Vector2 startDrag;
     private Vector2 endDrag;
+    // Undo Button Stack
+    Stack<Vector2> undoStack = new Stack<Vector2>();
 
     // Use this for initialization
     private void Start()
@@ -201,10 +203,9 @@ public class CheckersBoard : MonoBehaviour {
                 MovePiece(selectedPiece, x2, y2);
                 // Ends turn once move has been made
 
-                // IMPLEMENT STACK HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                //Stack<Vector2> undoStack = new Stack<Vector2>();
-               // undoStack.Push(MovePiece(selectedPiece));
-
+                // Puts destination coordinates of checker piece into a stack that takes in vector 2 daa
+                undoStack.Push(endDrag);
+                
 
                 EndTurn();
             }
@@ -219,10 +220,25 @@ public class CheckersBoard : MonoBehaviour {
         }
     }
 
-    /*private Vector2 MovePiece(Piece selectedPiece)
+    //when undo button is pressed
+    public void OnUndoClick()
     {
-        throw new NotImplementedException();
-    }*/
+
+        Debug.Log("You Pressed Undo!");
+        // Takes one instance of the vector 2 data "endDrag" off the top of the stack.
+        undoStack.Pop();
+        
+
+        //Stack<Vector2> undoStack = new Stack<Vector2>();
+        //undoStack.Push(endDrag);
+
+    }
+
+    public void OnRedoClick()
+    {
+        Debug.Log("You Pressed Redo!");
+    }
+
 
     private void EndTurn()
     {
