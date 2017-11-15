@@ -86,13 +86,13 @@ public class Piece : MonoBehaviour {
         if (board[x2, y2] != null)
             return false;
 
-        // THIS COULD BE IMPORTANT TO TRACK THE EXACT MOVES AND REPLAY THE GAME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // Keep track of the number of tiles that have been jumped via x axis
         int jumpedTilesX = Mathf.Abs(x1 - x2);
         // Keep track of the number of tiles that have been jumped via y axis
         // subtract value y2 to value of y1, gives new cordinate
         int jumpedTilesY = y2 - y1;
         // If jump 1 tile, it's a move. If jumped two tiles, it's a kill!
+
         // WHITE TEAM MOVE SET
         if (isWhite || isKing)
         {
@@ -112,6 +112,7 @@ public class Piece : MonoBehaviour {
                 }
             }
         }
+
         //BLACK TEAM MOVE SET
         if (!isWhite || isKing)
         {

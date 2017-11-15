@@ -13,17 +13,13 @@ public class CheckersBoard : MonoBehaviour {
     public GameObject blackPiecePrefab;
     // Vector3 data realigns objects within "boardOffset" method
     private Vector3 boardOffset = new Vector3(-4.0f, 0.0f, -4.0f);
-    // Same as previous but for "pieceOffset" method
+    // Realigns gameObjects (checker pieces) to position of board. 
     private Vector3 pieceOffset = new Vector3(0.5f, 0.0f, 0.5f);
-
     public bool isWhite;
     private bool isWhiteTurn;
     private bool hasKilled;
-
-    //Look at tutorial 2, 13.05 mins in. Could give indication on how to do movement log
     private Piece selectedPiece;
     private List<Piece> forcedPieces;
-
     private Vector2 mouseOver;
     private Vector2 startDrag;
     private Vector2 endDrag;
@@ -84,7 +80,7 @@ public class CheckersBoard : MonoBehaviour {
         }
         else
         {
-            // if raycast doesnt his, then equals -1. A non hit essentially.
+            // if raycast doesnt hit, then equals -1. A non hit essentially.
             mouseOver.x = -1;
             mouseOver.y = -1;
         }
@@ -141,7 +137,6 @@ public class CheckersBoard : MonoBehaviour {
     {
         forcedPieces = ScanForMove();
 
-        //THIS IS ONLY FOR MULTIPLAYER SUPPORT!!!! LOOK AT 17.20 MINS IN TUTORIAL 2!!!!
         startDrag = new Vector2(x1, y1);
         endDrag = new Vector2(x2, y2);
         selectedPiece = pieces[x1, y1];
@@ -206,7 +201,6 @@ public class CheckersBoard : MonoBehaviour {
                 // Puts destination coordinates of checker piece into a stack that takes in vector 2 daa
                 undoStack.Push(endDrag);
                 
-
                 EndTurn();
             }
             // If trying to make invalid move, it will then drop the piece back into original position.
@@ -227,18 +221,13 @@ public class CheckersBoard : MonoBehaviour {
         Debug.Log("You Pressed Undo!");
         // Takes one instance of the vector 2 data "endDrag" off the top of the stack.
         undoStack.Pop();
-        
-
-        //Stack<Vector2> undoStack = new Stack<Vector2>();
-        //undoStack.Push(endDrag);
-
+        GenerateBoard();
     }
 
     public void OnRedoClick()
     {
         Debug.Log("You Pressed Redo!");
     }
-
 
     private void EndTurn()
     {
@@ -295,7 +284,6 @@ public class CheckersBoard : MonoBehaviour {
         // No black pieces left = to you win
         if (!hasBlack)
             Victory(true);
-
     }
 
     private void Victory(bool isWhite)
@@ -316,7 +304,6 @@ public class CheckersBoard : MonoBehaviour {
         return forcedPieces;
     }
 
-    // COULD BE USED FOR AI MOVEMENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private List<Piece> ScanForMove()
     {
         forcedPieces = new List<Piece>();
@@ -328,7 +315,7 @@ public class CheckersBoard : MonoBehaviour {
             for (int dimensionY = 0; dimensionY < 8; dimensionY++)
                 // Checks X & Y cordinates on board (pieces), if there is a piece (!= null) and the piece is "White". Then it's your turn
                 if (pieces[dimensionX, dimensionY] != null && pieces[dimensionX, dimensionY].isWhite == isWhiteTurn)
-                    // Check if move is has to be forced.
+                    // Check if move has to be forced.
                     if (pieces[dimensionX, dimensionY].ForcedMove(pieces, dimensionX, dimensionY))
                         forcedPieces.Add(pieces[dimensionX, dimensionY]);
 
@@ -338,12 +325,12 @@ public class CheckersBoard : MonoBehaviour {
     // Method to generate pieces on board
     private void GenerateBoard()
     {
-        // Generate White team, sets at bottom two rows of the board
+        // Generate White team, sets at bottom three rows of the board
         for(int up2Down = 0; up2Down < 3; up2Down++)
         {
             // Determines if it's an odd row or not. This is by using a Modulu operator
             bool oddRow = (up2Down % 2 == 0);
-            // Makes pieces generate from left to right, going across the bottom two rows of the board
+            // Makes pieces generate from left to right, going across the bottom three rows of the board
             for (int left2Right = 0; left2Right < 8; left2Right += 2)
             {
                 // Generate our Piece by using a Ternary operator
@@ -352,9 +339,7 @@ public class CheckersBoard : MonoBehaviour {
             }
         }
 
-        // REVIEW CODE COMMENTS ABOVE ^^^ TO UNDERSTAND PROCESS. IT'S THE SAME APART FROM SOME VARIABLE VALUES
-
-        // Generate Black team, sets at top two rows of the board
+        // Generate Black team, sets at top three rows of the board
         // int "up2Down" is set at 7 because our array is 8 by 8, and our code reads from 0 to 7
         // which means it's the top row on the board.
         for (int up2Down = 7; up2Down > 4; up2Down--)
