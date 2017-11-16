@@ -217,11 +217,9 @@ public class CheckersBoard : MonoBehaviour {
     //when undo button is pressed
     public void OnUndoClick()
     {
-
         Debug.Log("You Pressed Undo!");
         // Takes one instance of the vector 2 data "endDrag" off the top of the stack.
         undoStack.Pop();
-        GenerateBoard();
     }
 
     public void OnRedoClick()
@@ -280,10 +278,13 @@ public class CheckersBoard : MonoBehaviour {
         }
         // No white pieces left = to you lose
         if (!hasWhite)
+        
             Victory(false);
+             
         // No black pieces left = to you win
         if (!hasBlack)
-            Victory(true);
+        
+            Victory(true);       
     }
 
     private void Victory(bool isWhite)
